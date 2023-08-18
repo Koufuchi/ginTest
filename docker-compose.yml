@@ -1,11 +1,30 @@
 version: '3'
 
 services:
-  golang :
-    container_name : golang
+  gin-test :
+    container_name : gin-test
     build :
-      context : .
+      context : ./go
+    networks:
+      - gin-test-network
+
+  nginx-gin :
+    container_name : nginx-gin
+    build :
+      context : ./nginx
+    networks:
+      - gin-test-network
+    volumes:
+      - ./nginx:/nginx
     ports:
       - 80:80
       - 443:443
-    
+    environment:
+      NGINX_ALLOW_IP: ${NGINX_ALLOW_IP}
+      NGINX_PORT: ${NGINX_PORT}
+      NGINX_SERVER_NAME: ${NGINX_SERVER_NAME}
+      NGINX_PROXY_PASS: ${NGINX_PROXY_PASS}
+      
+
+networks:
+  gin-test-network:
